@@ -2,7 +2,7 @@ import express from "express";
 const authRouter = express.Router();
 import authController from "../controllers/auth.controller.js";
 import limiter from "../middlewares/loginLimiter.middleware.js";
-// import { verifyToken } from '../middlewares/auth.middleware.js'
+
 import {
   loginValidationRules,
   regValidationRules,
@@ -23,4 +23,9 @@ authRouter.post(
   authController.signIn
 );
 
+authRouter.post("/logout", authController.signOut)
+
+authRouter.post("/refresh", authController.refresh)
+
 export default authRouter;
+

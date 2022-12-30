@@ -1,13 +1,9 @@
-import { signInProcess, signupProcess } from "../services/auth.service.js";
+import { refreshProcess, signInProcess, signOutProcess, signupProcess } from "../services/auth.service.js";
 
 const authController = {};
 
 authController.signUp = async (req, res) => {
-  try {
-    signupProcess(req, res);
-  } catch (error) {
-    return res.status(400).json({ success: false, message: error.message });
-  }
+    signupProcess(req, res); 
 };
 
 authController.signIn = async (req, res) => {
@@ -18,4 +14,12 @@ authController.signIn = async (req, res) => {
   }
 };
 
+authController.signOut =  (req, res) => {
+   signOutProcess(req, res)
+
+}
+
+authController.refresh = (req, res) => {
+  refreshProcess(req, res)
+}
 export default authController;
