@@ -46,9 +46,16 @@ export const signInProcess = async (req, res) => {
     return res
       .status(422)
       .json({ success: false, message: "invalid credential" });
-  const generatedAccessToken = generateAccessToken(result._id);
-  res.cookie("token", generatedAccessToken, { expiresIn: new Date() + 9999 });
-  sendAccessToken(res, generatedAccessToken, result);
+
+      const userInfo = {
+        id: result._id,
+        firstName: result.firstName,
+        lastName: result.lastName,
+        email: result.email
+      }
+
+  const generatedAccessToken = generateTokens(res, userInfo);
+  return res.status(200).json({ accessToken: generatedAccessToken, userInfo })
 };
 
 export const signOutProcess = async(req, res) => {
