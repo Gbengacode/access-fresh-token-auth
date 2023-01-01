@@ -4,7 +4,7 @@ const profileRouter = express.Router();
 
 // import verifyToken from "../middlewares/auth.middleware.js";
 
-profileRouter.get("/user", verifyToken, (req, res) => {
+profileRouter.get("/profile", verifyToken, (req, res) => {
     res.send("testing profile")
 });
 
