@@ -6,7 +6,8 @@ import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import { generateTokens } from "../utils/token.js";
 
-export const signupProcess = asyncHandler(async (req, res) => {
+const authServices = {}
+authServices.signupProcess = asyncHandler(async (req, res) => {
   const { firstName, lastName, email, password } = req.body;
   const userExist = await User.findOne({ email });
   if (userExist)
@@ -34,7 +35,7 @@ export const signupProcess = asyncHandler(async (req, res) => {
   }
 });
 
-export const signInProcess = async (req, res) => {
+authServices.signInProcess = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const result = await User.findOne({ email });
   if (!result)
@@ -44,7 +45,7 @@ export const signInProcess = async (req, res) => {
   const isCorrectPassword = await bcrypt.compare(password, result.password);
   if (!isCorrectPassword)
     return res
-      .status(422)
+      .status(400)
       .json({ success: false, message: "invalid credential" });
 
       const userInfo = {
@@ -56,17 +57,17 @@ export const signInProcess = async (req, res) => {
 
   const generatedAccessToken = generateTokens(res, userInfo);
   return res.status(200).json({ accessToken: generatedAccessToken, userInfo })
-};
+});
 
-export const signOutProcess = async(req, res) => {
+authServices.signOutProcess = asyncHandler(async(req, res) => {
     const cookies = req.cookies
     if (!cookies?.jwt) return res.sendStatus(204) //No content
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
     res.json({ message: 'Cookie cleared' })
 
-}
+})
 
-export const refreshProcess = (req, res) => {
+authServices.refreshProcess = asyncHandler((req, res) => {
   const cookies = req.cookies
   if (!cookies?.jwt) return res.status(401).json({ message: 'Unauthorized' })
 
@@ -96,4 +97,6 @@ export const refreshProcess = (req, res) => {
           res.status(200).json({ accessToken, userInfo })
       })
   )
-}
+})
+
+export default authServices
